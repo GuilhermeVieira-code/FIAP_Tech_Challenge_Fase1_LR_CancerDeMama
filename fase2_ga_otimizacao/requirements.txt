@@ -1,0 +1,24 @@
+# Dependências — Fase 2: Otimização de Hiperparâmetros via AG
+# (inclui tudo da Fase 1 + extras da Fase 2)
+
+# Dados e ML (Fase 1)
+pandas>=1.3.0
+numpy>=1.21.0
+scikit-learn>=1.0.0
+joblib>=1.0.0
+
+# Visualização
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# LLM
+google-generativeai>=0.7.0
+python-dotenv>=1.0.0
+
+# Jupyter
+jupyter>=1.0.0
+notebook>=6.4.0
+ipykernel>=6.0.0
+
+# Testes
+pytest>=7.0.0
