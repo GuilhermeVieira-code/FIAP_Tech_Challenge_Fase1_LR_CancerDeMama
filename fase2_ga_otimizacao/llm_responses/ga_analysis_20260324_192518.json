@@ -1,0 +1,19 @@
+{
+  "type": "ga_analysis",
+  "timestamp": "2026-03-24T19:25:18.095779",
+  "model": "google/flan-t5-base",
+  "prompt": "\nAssistente médico especializado em oncologia feminina. Use linguagem clínica em português brasileiro. Seja empático, preciso e nunca alarmista. Este sistema apoia o médico — a decisão final é sempre do profissional.\n\n---\n\nAnalise os resultados dos três experimentos do Algoritmo Genético aplicado\nà otimização do modelo de diagnóstico de câncer de mama:\n\nExp1: pop=30, mutação=0.15, 20 gerações, fitness=  Melhor fitness: 0.9639\n  Recall        : 0.9529\n  Especificidade: 0.9895\n  F1-score      : 0.9671\n  Tempo         : 43.3s\nExp2: pop=50, mutação=0.1, 30 gerações, fitness=  Melhor fitness: 0.9640\n  Recall        : 0.9588\n  Especificidade: 0.9825\n  F1-score      : 0.9644\n  Tempo         : 441.1s\nExp3: pop=80, mutação=0.2, 30 gerações, fitness=  Melhor fitness: 0.9654\n  Recall        : 0.9706\n  Especificidade: 0.9860\n  F1-score      : 0.9735\n  Tempo         : 179.6s\n\nEm português, responda: qual experimento foi melhor para diagnóstico de câncer de mama, \"\n\"por que a taxa de mutação importa e qual configuração recomenda para produção clínica.",
+  "response": "ANÁLISE DOS EXPERIMENTOS DO ALGORITMO GENÉTICO\n\nExperimento 1: Pop=30 | Mut=0.15 | Ger=20 → Fitness=0.9639\nExperimento 2: Pop=50 | Mut=0.1 | Ger=30 → Fitness=0.9640\nExperimento 3: Pop=80 | Mut=0.2 | Ger=30 → Fitness=0.9654\n\nMELHOR CONFIGURAÇÃO: Pop=80, Mutação=0.2, Gerações=30.\nPopulações maiores aumentam a diversidade genética e reduzem o risco de convergência prematura em ótimos locais. Taxa de mutação moderada (~0.15-0.20) equilibra exploração e explotação do espaço de hiperparâmetros.\n\nRECOMENDAÇÃO PARA PRODUÇÃO: A configuração do Experimento 3 (maior população e mutação mais alta) apresentou melhor fitness final, sendo recomendada para otimizações periódicas do modelo clínico.",
+  "quality": {
+    "type": "ga_analysis",
+    "overall_score": 0.423,
+    "completeness": 0.62,
+    "medical_terminology": 0.0,
+    "adequacy": 1.0,
+    "language_pt": 0.375,
+    "terms_found": [],
+    "word_count": 93,
+    "quality_label": "Fraca"
+  },
+  "metadata": {}
+}

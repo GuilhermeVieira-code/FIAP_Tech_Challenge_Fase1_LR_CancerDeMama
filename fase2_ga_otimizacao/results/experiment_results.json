@@ -1,0 +1,126 @@
+{
+  "baseline": {
+    "hyperparams": {
+      "scaler": "RobustScaler",
+      "use_pca": true,
+      "pca_variance": 0.9,
+      "C": 1.0,
+      "solver": "lbfgs",
+      "max_iter": 1000
+    },
+    "recall": 0.9524,
+    "specificity": 0.9722,
+    "f1": 0.9524,
+    "accuracy": 0.9649,
+    "equity": 0.9214,
+    "fitness": 0.9533,
+    "confusion_matrix": {
+      "tn": 70,
+      "fp": 2,
+      "fn": 2,
+      "tp": 40
+    }
+  },
+  "best_optimized": {
+    "hyperparams": {
+      "scaler": "StandardScaler",
+      "use_pca": false,
+      "pca_variance": 0.9033,
+      "C": 0.159698,
+      "solver": "liblinear",
+      "max_iter": 1154
+    },
+    "recall": 0.9762,
+    "specificity": 0.9861,
+    "f1": 0.9762,
+    "accuracy": 0.9825,
+    "equity": 0.9607,
+    "fitness": 0.9766,
+    "confusion_matrix": {
+      "tn": 71,
+      "fp": 1,
+      "fn": 1,
+      "tp": 41
+    }
+  },
+  "experiments": [
+    {
+      "label": "Exp 1 — Pop=30  | Mut=0.15 | 20 gen",
+      "config": {
+        "population_size": 30,
+        "n_generations": 20,
+        "mutation_rate": 0.15
+      },
+      "best_fitness": 0.963907,
+      "best_hyperparams": {
+        "scaler": "StandardScaler",
+        "use_pca": false,
+        "pca_variance": 0.9115,
+        "C": 0.09609,
+        "solver": "lbfgs",
+        "max_iter": 1080
+      },
+      "cv_metrics": {
+        "recall": 0.964703,
+        "specificity": 0.985965,
+        "f1": 0.970446,
+        "accuracy": 0.978027,
+        "equity": 0.899859,
+        "fitness": 0.963907
+      },
+      "execution_time_s": 43.29
+    },
+    {
+      "label": "Exp 2 — Pop=50  | Mut=0.10 | 30 gen",
+      "config": {
+        "population_size": 50,
+        "n_generations": 30,
+        "mutation_rate": 0.1
+      },
+      "best_fitness": 0.96398,
+      "best_hyperparams": {
+        "scaler": "MinMaxScaler",
+        "use_pca": false,
+        "pca_variance": 0.926,
+        "C": 55.892054,
+        "solver": "saga",
+        "max_iter": 489
+      },
+      "cv_metrics": {
+        "recall": 0.964703,
+        "specificity": 0.985965,
+        "f1": 0.970497,
+        "accuracy": 0.978027,
+        "equity": 0.90046,
+        "fitness": 0.96398
+      },
+      "execution_time_s": 441.05
+    },
+    {
+      "label": "Exp 3 — Pop=80  | Mut=0.20 | 30 gen",
+      "config": {
+        "population_size": 80,
+        "n_generations": 30,
+        "mutation_rate": 0.2
+      },
+      "best_fitness": 0.965424,
+      "best_hyperparams": {
+        "scaler": "StandardScaler",
+        "use_pca": false,
+        "pca_variance": 0.9033,
+        "C": 0.159698,
+        "solver": "liblinear",
+        "max_iter": 1154
+      },
+      "cv_metrics": {
+        "recall": 0.970551,
+        "specificity": 0.978947,
+        "f1": 0.967755,
+        "accuracy": 0.975819,
+        "equity": 0.909481,
+        "fitness": 0.965424
+      },
+      "execution_time_s": 179.61
+    }
+  ]
+}

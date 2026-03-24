@@ -1,0 +1,14 @@
+RESULTADO DO MODELO: BENIGNO — Probabilidade de malignidade: 0.5%
+
+NÍVEL DE CONFIANÇA: O modelo apresenta recall de 97.62% e F1-score de 97.62%, indicando alta capacidade de detecção de casos malignos.
+
+PRÓXIMOS PASSOS CLÍNICOS: A paciente recomenda-se acompanhamento de rotina. Manter rastreamento anual com mamografia conforme protocolo.
+
+COMUNICAÇÃO À PACIENTE: Apresente o resultado com empatia, em linguagem acessível, reforçando que este é um sistema de apoio e que o diagnóstico final será feito pelo médico especialista.
+
+DIREITOS NO SUS: A paciente tem direito a confirmação diagnóstica em até 30 dias (Lei 12.732/2012) e ao tratamento integral no sistema público de saúde.
+
+NOTA: Este sistema é uma ferramenta de apoio — a decisão clínica final é sempre do médico.
+
+---
+Avaliação de qualidade: Boa (score=0.872)

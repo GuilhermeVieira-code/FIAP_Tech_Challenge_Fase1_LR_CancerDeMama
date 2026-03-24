@@ -43,7 +43,6 @@ requirements.txt
 # Docker
 docker build -t breast-cancer-diagnosis .
 docker run -p 8888:8888 breast-cancer-diagnosis
-# Acesse http://localhost:8888
 
 # Local
 pip install -r requirements.txt
@@ -54,73 +53,141 @@ jupyter notebook
 
 # 🧬 Fase 2 — Otimização de Hiperparâmetros via Algoritmo Genético + LLM
 
-Usa AG para encontrar automaticamente a melhor combinação de hiperparâmetros para o pipeline de diagnóstico da Fase 1. O Google Gemini gera explicações clínicas sensíveis ao gênero a partir dos resultados do modelo.
+Utiliza Algoritmo Genético para encontrar automaticamente a melhor combinação de hiperparâmetros para o pipeline de diagnóstico da Fase 1. Um LLM local (flan-t5-base) gera explicações clínicas em linguagem natural para os profissionais de saúde.
 
-## O que o AG Otimiza
-
-| Gene | Espaço de Busca |
-|---|---|
-| Scaler | StandardScaler / RobustScaler / MinMaxScaler |
-| Usar PCA | Sim / Não |
-| PCA variance | 0.80 – 0.99 |
-| C (LogReg) | 0.001 – 100 (escala log) |
-| Solver | lbfgs / liblinear / saga |
-| max_iter | 200 – 2000 |
-
-**Fitness:** `0.50 × Recall + 0.30 × F1 + 0.20 × Especificidade`
-
-Prioriza recall pois falsos negativos (câncer não detectado) são clinicamente mais graves.
-
-## Estrutura — Fase 2
+## Arquitetura
 
 ```
 fase2_ga_otimizacao/
-├── src/
-│   ├── chromosome.py        # Representação e decodificação dos genes
-│   ├── genetic_algorithm.py # AG: torneio, crossover uniforme/aritmético, mutação gaussiana
-│   └── model_evaluator.py   # Pipeline sklearn + validação cruzada estratificada
-├── llm/
-│   ├── prompts.py           # Templates Gemini (contexto médico feminino)
-│   ├── report_generator.py  # Explicação clínica + comparação + análise AG
-│   └── llm_responses/       # Respostas salvas para fine-tuning na Fase 3
-├── tests/
-│   ├── test_ga.py
-│   └── test_fitness.py
-├── results/
-├── main.py
-└── requirements.txt
+├── genetic_algorithm.py   # AG completo: cromossomo, avaliador, operadores genéticos
+├── llm.py                 # LLM local (flan-t5-base): prompts, geração e avaliação
+├── main.py                # Pipeline principal: dados → AG → gráficos → LLM
+├── tests.py               # Testes automatizados (pytest)
+├── requirements.txt       # Dependências da Fase 2
+├── results/               # Outputs gerados (gráficos, JSON, textos do LLM)
+└── llm_responses/         # Respostas do LLM salvas em JSON para fine-tuning (Fase 3)
 ```
+
+```
+                    breast_cancer_dataset.csv
+                            │
+                    ┌───────▼────────┐
+                    │  load_data()   │
+                    └───────┬────────┘
+                            │
+              ┌─────────────▼──────────────┐
+              │   Algoritmo Genético (AG)   │
+              │  ┌─────────────────────┐   │
+              │  │  Cromossomo [0,1]^6 │   │
+              │  │  Gene 0 → Scaler    │   │
+              │  │  Gene 1 → PCA on/off│   │
+              │  │  Gene 2 → PCA var   │   │
+              │  │  Gene 3 → C (log)   │   │
+              │  │  Gene 4 → Solver    │   │
+              │  │  Gene 5 → max_iter  │   │
+              │  └────────┬────────────┘   │
+              │  Fitness = 0.45·Recall     │
+              │          + 0.25·F1         │
+              │          + 0.20·Spec.      │
+              │          + 0.10·Equity     │
+              └─────────────┬──────────────┘
+                            │
+              ┌─────────────▼──────────────┐
+              │  3 Experimentos             │
+              │  Exp1: Pop=30  Mut=0.15    │
+              │  Exp2: Pop=50  Mut=0.10    │
+              │  Exp3: Pop=80  Mut=0.20    │
+              └─────────────┬──────────────┘
+                            │
+            ┌───────────────┼───────────────┐
+            ▼               ▼               ▼
+    convergence.png  metrics_comparison  results.json
+                            │
+              ┌─────────────▼──────────────┐
+              │   LLM Local (flan-t5-base)  │
+              │  • Explicação diagnóstico   │
+              │  • Comparação de modelos    │
+              │  • Análise dos experimentos │
+              │  • Avaliação de qualidade   │
+              └─────────────┬──────────────┘
+                            │
+                   llm_responses/*.json
+                   (dataset para Fase 3)
+```
+
+## O que o AG Otimiza
+
+| Gene | Hiperparâmetro | Espaço de Busca |
+|---|---|---|
+| 0 | Scaler | StandardScaler / RobustScaler / MinMaxScaler |
+| 1 | Usar PCA | Sim / Não |
+| 2 | PCA variance | 0.80 – 0.99 |
+| 3 | C (LogReg) | 0.001 – 100 (escala logarítmica) |
+| 4 | Solver | lbfgs / liblinear / saga |
+| 5 | max_iter | 200 – 2000 |
+
+## Função Fitness
+
+```
+fitness = 0.45 × Recall + 0.25 × F1 + 0.20 × Especificidade + 0.10 × Equidade
+```
+
+- **Recall (45%):** falsos negativos = câncer não detectado → risco de vida
+- **F1-score (25%):** equilíbrio geral entre precisão e recall
+- **Especificidade (20%):** evita alarmes falsos e biópsias desnecessárias
+- **Equidade (10%):** consistência do recall entre quartis demográficos
+
+## Resultados
+
+| Métrica | Baseline (Fase 1) | Otimizado (AG) | Melhoria |
+|---|---|---|---|
+| Recall | 0.9524 | **0.9762** | +0.0238 |
+| F1-score | 0.9524 | **0.9762** | +0.0238 |
+| Acurácia | 0.9649 | **0.9825** | +0.0176 |
+
+**Hiperparâmetros ótimos encontrados:** StandardScaler + PCA(0.98) + LogReg(C=0.27, lbfgs)
 
 ## Como Executar — Fase 2
 
 ```bash
-# 1. Instalar dependências
+# 1. Criar e ativar ambiente virtual
+py -m venv .venv
+.venv\Scripts\activate        # Windows PowerShell
+# ou
+.venv\Scripts\activate.bat    # Windows CMD
+
+# 2. Instalar dependências
+pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install -r fase2_ga_otimizacao/requirements.txt
 
-# 2. Configurar API Gemini (opcional)
-cp .env.example .env
-# Edite .env com sua GEMINI_API_KEY
+# 3. Pipeline completo (AG + LLM)
+py -m fase2_ga_otimizacao.main
 
-# 3. Pipeline completo
-python -m fase2_ga_otimizacao.main
+# Modo rápido para testes (3 folds, sem LLM)
+py -m fase2_ga_otimizacao.main --skip-llm --cv-folds 3
 
-# Sem API Gemini (mais rápido)
-python -m fase2_ga_otimizacao.main --skip-llm
-
-# CV rápido para testes locais
-python -m fase2_ga_otimizacao.main --skip-llm --cv-folds 3
-
-# 4. Testes
-pytest fase2_ga_otimizacao/tests/ -v
+# 4. Testes automatizados
+py -m pytest fase2_ga_otimizacao/tests.py -v
 ```
 
 ## Experimentos do AG
 
 | # | Pop | Mutação | Gerações | Objetivo |
 |:---:|:---:|:---:|:---:|---|
-| 1 | 30 | 0.15 | 20 | Convergência rápida |
+| 1 | 30 | 0.15 | 20 | Convergência rápida — baseline de comparação |
 | 2 | 50 | 0.10 | 30 | Equilíbrio exploração/explotação |
-| 3 | 80 | 0.20 | 30 | Alta diversidade |
+| 3 | 80 | 0.20 | 30 | Alta diversidade — vencedor |
+
+## LLM Local — flan-t5-base
+
+| Característica | Detalhe |
+|---|---|
+| Modelo | `google/flan-t5-base` (~990 MB) |
+| Execução | 100% local — sem API key, sem internet após download |
+| Idioma | Português brasileiro |
+| Outputs | Explicação clínica, comparação de modelos, análise do AG |
+| Avaliação | Score automático: completude, terminologia médica, adequação |
+| Fase 3 | Respostas salvas em `llm_responses/*.json` para fine-tuning |
 
 ## Outputs Gerados
 
@@ -131,10 +198,10 @@ Salvos em `fase2_ga_otimizacao/results/`:
 | `convergence.png` | Curvas de convergência dos 3 experimentos |
 | `metrics_comparison.png` | Baseline Fase 1 vs. modelo otimizado |
 | `experiment_results.json` | Métricas e hiperparâmetros completos |
-| `explicacao_diagnostico.txt` | Explicação clínica gerada pelo Gemini |
-| `comparacao_modelos.txt` | Análise comparativa baseline vs. otimizado (Gemini) |
-| `analise_experimentos.txt` | Análise dos 3 experimentos do AG (Gemini) |
+| `explicacao_diagnostico.txt` | Explicação clínica gerada pelo LLM |
+| `comparacao_modelos.txt` | Análise comparativa baseline vs. otimizado |
+| `analise_experimentos.txt` | Análise dos 3 experimentos do AG |
 
 ---
 
-**Nota:** Projeto acadêmico — Pós Tech FIAP. Não utilizar para diagnóstico médico real sem validação e aprovação regulatória (ANVISA).
+**Nota:** Projeto acadêmico — Pós Tech FIAP. Não utilizar para diagnóstico médico real sem validação clínica e aprovação regulatória (ANVISA/CFM).

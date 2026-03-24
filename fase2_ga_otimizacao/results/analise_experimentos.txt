@@ -1,0 +1,13 @@
+ANÁLISE DOS EXPERIMENTOS DO ALGORITMO GENÉTICO
+
+Experimento 1: Pop=30 | Mut=0.15 | Ger=20 → Fitness=0.9639
+Experimento 2: Pop=50 | Mut=0.1 | Ger=30 → Fitness=0.9640
+Experimento 3: Pop=80 | Mut=0.2 | Ger=30 → Fitness=0.9654
+
+MELHOR CONFIGURAÇÃO: Pop=80, Mutação=0.2, Gerações=30.
+Populações maiores aumentam a diversidade genética e reduzem o risco de convergência prematura em ótimos locais. Taxa de mutação moderada (~0.15-0.20) equilibra exploração e explotação do espaço de hiperparâmetros.
+
+RECOMENDAÇÃO PARA PRODUÇÃO: A configuração do Experimento 3 (maior população e mutação mais alta) apresentou melhor fitness final, sendo recomendada para otimizações periódicas do modelo clínico.
+
+---
+Avaliação de qualidade: Fraca (score=0.423)

@@ -1,0 +1,14 @@
+COMPARAÇÃO DE MODELOS — Diagnóstico de Câncer de Mama
+
+Baseline (Fase 1): Recall=0.9524 | F1=0.9524 | Acc=0.9649
+Otimizado (AG):    Recall=0.9762 | F1=0.9762 | Acc=0.9825
+Configuração otimizada: StandardScaler | sem PCA | C=0.1597 | liblinear
+
+IMPACTO CLÍNICO: O modelo otimizado pelo Algoritmo Genético apresentou melhoria de +0.0238 no recall e +0.0238 no F1-score. Em termos práticos, a cada 100 pacientes malignas, o novo modelo detecta aproximadamente 2 casos a mais que seriam perdidos pelo modelo original.
+
+RECOMENDAÇÃO: O modelo otimizado é superior em recall — métrica prioritária no contexto oncológico, onde falsos negativos representam risco de vida. Recomenda-se adotar o modelo otimizado em produção, com validação contínua em dados prospectivos.
+
+CONSIDERAÇÕES ÉTICAS: A métrica de equidade demográfica garante desempenho consistente entre diferentes perfis de pacientes, minimizando vieses sistêmicos no diagnóstico.
+
+---
+Avaliação de qualidade: Boa (score=0.748)
