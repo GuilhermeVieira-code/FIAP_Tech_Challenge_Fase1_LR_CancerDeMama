@@ -42,33 +42,33 @@ Adotamos **codificação real** (real-valued encoding): cada indivíduo é um ve
 ### 2.2 Função Fitness
 
 ```
-fitness = 0.45 × Recall + 0.25 × F1-score + 0.20 × Especificidade + 0.10 × Equidade
+fitness = 0.45 × Recall + 0.25 × F1-score + 0.20 × Specificity + 0.10 × Equity
 ```
 
 **Justificativa dos pesos:**
 
-- **Recall (45%):** No contexto oncológico, falsos negativos (câncer não detectado) são clinicamente mais graves que falsos positivos. Uma paciente com diagnóstico perdido pode perder a janela de tratamento curativo.
-- **F1-score (25%):** Garante equilíbrio geral entre precisão e recall, evitando que o modelo maximize recall às custas de especificidade extremamente baixa.
-- **Especificidade (20%):** Controla os falsos positivos — pacientes saudáveis diagnosticadas erroneamente geram ansiedade, biópsias desnecessárias e sobrecarga do sistema de saúde.
-- **Equidade (10%):** Mede a consistência do recall entre grupos demográficos (quartis de mean radius). Um modelo equitativo tem desempenho consistente independentemente do perfil da paciente.
+- **Recall (45%):** No contexto oncológico, false negatives (câncer não detectado) são clinicamente mais graves que false positives. Uma paciente com diagnóstico perdido pode perder a janela de tratamento curativo.
+- **F1-score (25%):** Garante equilíbrio geral entre precision e recall, evitando que o modelo maximize recall às custas de specificity extremamente baixa.
+- **Specificity (20%):** Controla os false positives — pacientes saudáveis diagnosticadas erroneamente geram ansiedade, biópsias desnecessárias e sobrecarga do sistema de saúde.
+- **Equity (10%):** Mede a consistência do recall entre grupos demográficos (quartis de mean radius). Um modelo equitativo tem desempenho consistente independentemente do perfil da paciente.
 
-A avaliação utiliza **validação cruzada estratificada com 5 folds** para garantir que os resultados de fitness reflitam a capacidade de generalização do modelo, não memorização dos dados de treino.
+A avaliação utiliza **stratified k-fold cross-validation (5 folds)** para garantir que os resultados de fitness reflitam a capacidade de generalização do modelo, não memorização dos dados de treino.
 
-### 2.3 Operadores Genéticos
+### 2.3 Genetic Operators
 
-**Seleção — Torneio (k=3):**
-Três indivíduos são sorteados aleatoriamente; o de maior fitness é selecionado para reprodução. O torneio foi escolhido por criar pressão seletiva consistente independente da escala absoluta dos valores de fitness — essencial quando a população já está bem convergida (todos com fitness entre 0.96 e 0.98).
+**Selection — Tournament Selection (k=3):**
+Três indivíduos são sorteados aleatoriamente; o de maior fitness é selecionado para reprodução. O Tournament Selection foi escolhido por criar pressão seletiva consistente independente da escala absoluta dos valores de fitness — essencial quando a população já está bem convergida (todos com fitness entre 0.96 e 0.98).
 
-**Crossover — Uniforme e Aritmético (alternados):**
-- *Uniforme:* cada gene é herdado de um dos pais com probabilidade 0.5. Adequado para genes independentes.
-- *Aritmético:* filho = α×pai1 + (1−α)×pai2, com α ∈ [0.3, 0.7]. Ideal para genes contínuos (C, PCA variance), gerando filhos com valores intermediários.
+**Crossover — Uniform Crossover e Arithmetic Crossover (alternados):**
+- *Uniform Crossover:* cada gene é herdado de um dos pais com probabilidade 0.5. Adequado para genes independentes.
+- *Arithmetic Crossover:* filho = α×pai1 + (1−α)×pai2, com α ∈ [0.3, 0.7]. Ideal para genes contínuos (C, PCA variance), gerando filhos com valores intermediários.
 
-O crossover OX (Order Crossover) foi descartado por ser projetado para permutações (problema do caixeiro viajante), onde a ordem dos genes importa. Aqui, os genes são independentes entre si.
+O Order Crossover (OX1) foi descartado por ser projetado para permutações (Travelling Salesman Problem), onde a ordem dos genes importa. Aqui, os genes são independentes entre si.
 
-**Mutação — Gaussiana:**
+**Mutation — Gaussian Mutation:**
 Cada gene sofre perturbação N(0, σ) com probabilidade `mutation_rate`. A distribuição gaussiana realiza pequenas perturbações ao redor do valor atual, ideal para refinamento fino. Após a perturbação, os genes são recortados em [0, 1].
 
-**Elitismo:**
+**Elitism:**
 Os 2 melhores indivíduos de cada geração passam diretamente para a próxima, garantindo que o melhor modelo encontrado nunca seja perdido.
 
 ---
@@ -77,11 +77,11 @@ Os 2 melhores indivíduos de cada geração passam diretamente para a próxima, 
 
 Foram realizados 3 experimentos com diferentes configurações do AG:
 
-| Experimento | Pop | Mutação | Gerações | Objetivo |
+| Experimento | Pop | Mutation Rate | Gerações | Objetivo |
 |---|---|---|---|---|
-| 1 | 30 | 0.15 | 20 | Convergência rápida (baseline de comparação) |
-| 2 | 50 | 0.10 | 30 | Equilíbrio exploração/explotação |
-| 3 | 80 | 0.20 | 30 | Alta diversidade — maior exploração do espaço |
+| 1 | 30 | 0.15 | 20 | Fast convergence (comparison baseline) |
+| 2 | 50 | 0.10 | 30 | Exploration/exploitation balance |
+| 3 | 80 | 0.20 | 30 | High diversity — maior exploration do espaço |
 
 ### 3.1 Resultados por Experimento
 
@@ -94,8 +94,8 @@ Foram realizados 3 experimentos com diferentes configurações do AG:
 ### 3.2 Análise dos Experimentos
 
 O Experimento 3 obteve o melhor fitness por dois fatores:
-1. **População maior (80):** Maior diversidade genética inicial, reduzindo o risco de convergência prematura em ótimos locais.
-2. **Mutação maior (0.20):** Maior capacidade de exploração — o AG conseguiu sair de regiões subótimas onde os experimentos menores ficaram presos.
+1. **Larger population (80):** Maior genetic diversity inicial, reduzindo o risco de premature convergence em local optima.
+2. **Higher mutation rate (0.20):** Maior capacidade de exploration — o AG conseguiu sair de regiões subótimas onde os experimentos menores ficaram presos.
 
 O trade-off é o tempo de execução (157s vs 27s do Exp 1), aceitável para um processo de otimização periódica offline.
 
@@ -109,10 +109,10 @@ Avaliação no conjunto de teste (20% dos dados, 114 pacientes):
 |---|---|---|---|
 | **Recall** | 0.9524 | **0.9762** | **+0.0238** |
 | **F1-score** | 0.9524 | **0.9762** | **+0.0238** |
-| **Acurácia** | 0.9649 | **0.9825** | **+0.0176** |
-| Especificidade | — | 0.9861 | — |
-| Precision (Maligno) | 0.95 | 0.98 | +0.03 |
-| Precision (Benigno) | 0.97 | 0.99 | +0.02 |
+| **Accuracy** | 0.9649 | **0.9825** | **+0.0176** |
+| Specificity | — | 0.9861 | — |
+| Precision (Malignant) | 0.95 | 0.98 | +0.03 |
+| Precision (Benign) | 0.97 | 0.99 | +0.02 |
 
 ### 4.1 Descobertas do AG
 
@@ -142,7 +142,7 @@ A melhoria de +0.0238 no recall significa que, em um conjunto de 42 pacientes ma
 - **Custo zero:** Sem dependência de APIs pagas
 - **Disponibilidade:** Funciona offline — hospitais não podem depender de internet
 
-### 5.2 Técnicas de Prompt Engineering
+### 5.2 Prompt Engineering Techniques
 
 Todos os prompts foram projetados com 3 princípios:
 1. **Contexto médico feminino:** especialização em oncologia mamária
@@ -159,16 +159,16 @@ Os prompts foram otimizados para o modelo flan-t5 (seq2seq), usando instruções
 | `comparacao_modelos.txt` | Gestão hospitalar | Impacto clínico da melhoria, recomendação |
 | `analise_experimentos.txt` | Time técnico | Melhor configuração, análise do AG |
 
-### 5.4 Avaliação de Qualidade do LLM
+### 5.4 LLM Response Quality Evaluation
 
 Cada resposta é avaliada automaticamente em 4 critérios:
 
 | Critério | Peso | Métrica |
 |---|---|---|
-| Completude | 30% | Mínimo de 150 palavras |
-| Terminologia médica | 40% | Presença de termos clínicos relevantes |
-| Adequação | 20% | Ausência de linguagem alarmista |
-| Idioma (PT-BR) | 10% | Marcadores do português |
+| Completeness | 30% | Mínimo de 150 palavras |
+| Medical Terminology | 40% | Presença de termos clínicos relevantes |
+| Adequacy | 20% | Ausência de linguagem alarmista |
+| Language (PT-BR) | 10% | Marcadores do português |
 
 As respostas avaliadas como "Boa" (score ≥ 0.7) são salvas em `llm_responses/*.json` no formato prompt+resposta, constituindo o dataset inicial para fine-tuning na Fase 3.
 

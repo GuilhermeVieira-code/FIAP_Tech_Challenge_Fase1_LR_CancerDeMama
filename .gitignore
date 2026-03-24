@@ -1,0 +1,52 @@
+# ─── Python ───────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ─── Ambientes virtuais ───────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ─── Jupyter ──────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ─── Testes e cobertura ───────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ─── Variáveis de ambiente (segredos) ─────────────────────
+.env
+# .env.example é seguro para commitar (sem segredos reais)
+
+# ─── IDEs ─────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── Claude Code interno ──────────────────────────────────
+.claude/
+
+# ─── OS ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Modelos LLM baixados localmente (podem ser GB) ───────
+# Os modelos do Hugging Face ficam em ~/.cache/huggingface
+# Não commitar cache local se existir
+*.bin
+*.safetensors
+*.onnx
+
+# ─── Logs temporários ─────────────────────────────────────
+*.log
