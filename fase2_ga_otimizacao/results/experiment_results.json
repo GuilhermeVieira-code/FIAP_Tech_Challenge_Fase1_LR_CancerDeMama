@@ -68,7 +68,7 @@
         "equity": 0.899859,
         "fitness": 0.963907
       },
-      "execution_time_s": 43.29
+      "execution_time_s": 51.66
     },
     {
       "label": "Exp 2 — Pop=50  | Mut=0.10 | 30 gen",
@@ -94,7 +94,7 @@
         "equity": 0.90046,
         "fitness": 0.96398
       },
-      "execution_time_s": 441.05
+      "execution_time_s": 497.86
     },
     {
       "label": "Exp 3 — Pop=80  | Mut=0.20 | 30 gen",
@@ -120,7 +120,7 @@
         "equity": 0.909481,
         "fitness": 0.965424
       },
-      "execution_time_s": 179.61
+      "execution_time_s": 190.23
     }
   ]
 }
